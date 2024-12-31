@@ -1,4 +1,4 @@
-name: Sync, Build, and Release
+name: Conditional Steps with Environment Variables
 
 on:
   schedule:
@@ -9,107 +9,24 @@ jobs:
   sync_and_build:
     runs-on: ubuntu-latest
 
+
+jobs:
+  conditional-steps:
+    runs-on: ubuntu-latest
+
     steps:
-      # 1. Клонируем форк
-      - name: Checkout Fork
-        uses: actions/checkout@v3
-        with:
-          repository: nix155/qdomyos-zwift
-          token: ${{ secrets.PAT_TOKEN }}
-          fetch-depth: 0
-
-      # 2. Настраиваем Upstream и синхронизируем с оригиналом
-      - name: Sync with Upstream
+      # Шаг 1: Определяем переменную
+      - name: Set Environment Variable
         run: |
-          git remote add upstream https://github.com/cagnulein/qdomyos-zwift.git
-          git fetch upstream
-          if git diff --quiet HEAD upstream/master; then
-            echo "No updates. Skipping build."
-            echo "SHOULD_CONTINUE=false" >> $GITHUB_ENV
-          fi
-          git merge upstream/master --no-edit
-          git push origin master
+          echo "RUN_NEXT_STEP=true" >> $GITHUB_ENV
 
-      - name: Cancel Workflow If No Updates
-        # if: env.SHOULD_CONTINUE == 'true'
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const token = process.env.GITHUB_TOKEN;
-            const octokit = require('@actions/github').getOctokit(token);
-            await octokit.actions.cancelWorkflowRun({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              run_id: context.runId,
-            });
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Шаг 2: Условное выполнение на основе переменной
+      - name: Conditional Step
+        if: env.RUN_NEXT_STEP == 'true'
+        run: echo "This step runs because RUN_NEXT_STEP is true!"
 
-#       # 3. Устанавливаем зависимости
-#       - name: Install Dependencies
-#         run: |
-#           sudo apt update -y
-#           sudo apt install --no-install-recommends -y \
-#             git \
-#             ca-certificates \
-#             qtquickcontrols2-5-dev \
-#             qtconnectivity5-dev \
-#             qtbase5-private-dev \
-#             qtpositioning5-dev \
-#             libqt5charts5-dev \
-#             libqt5networkauth5-dev \
-#             libqt5websockets5-dev \
-#             qml-module* \
-#             libqt5texttospeech5-dev \
-#             qtlocation5-dev \
-#             qtmultimedia5-dev \
-#             g++ \
-#             make \
-#             wget \
-#             unzip
+      # Шаг 3: Второй условный шаг
+      - name: Another Conditional Step
+        if: env.RUN_NEXT_STEP == 'false'
+        run: echo "This step not runs because RUN_NEXT_STEP is false!"
 
-#       # 4. Обновляем подмодули и компилируем проект
-#       - name: Build Binary
-#         run: |
-#           git submodule update --init src/smtpclient/
-#           git submodule update --init src/qmdnsengine/
-#           git submodule update --init tst/googletest/
-#           pushd src
-#           qmake qdomyos-zwift.pro
-#           make -j$(nproc)
-#           popd
-
-#       # 5. Упаковываем бинарник с добавлением даты
-#       - name: Package Binary
-#         run: |
-#           mkdir -p dist
-#           TIMESTAMP=$(date +"%Y%m%d-%H%M")
-#           ARC_PATH="dist/qdomyos-zwift-${TIMESTAMP}.tar.gz"
-#           echo "FILE_PATH=$ARC_PATH" >> $GITHUB_ENV
-#           tar -czvf "$ARC_PATH" src/qdomyos-zwift
-
-#       # 6. Создаём релиз и публикуем упакованный бинарник
-#       - name: Create Release
-#         id: create_release
-#         uses: actions/create-release@v1
-#         with:
-#           tag_name: ${{ github.run_number }}
-#           release_name: "Release ${{ github.run_number }}"
-#           draft: false
-#           prerelease: false
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
-
-#       - name: Upload Release Asset
-#         uses: actions/upload-release-asset@v1
-#         with:
-#           upload_url: ${{ steps.create_release.outputs.upload_url }}
-#           asset_path: ${{ env.FILE_PATH }}
-#           asset_name: qdomyos-zwift.tar.gz
-#           asset_content_type: application/gzip
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
-
-
-# # бинарник лежит src/qdomyos-zwift
-# # докерфайлы - сложить в docker/имя_проекта
