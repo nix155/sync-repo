@@ -8,6 +8,8 @@ on:
 jobs:
   sync:
     runs-on: ubuntu-latest
+    outputs:
+      run_build: ${{ steps.sync_upstream.outputs.run_build }}
 
     steps:
       # 1. Клонируем форк
@@ -20,25 +22,25 @@ jobs:
 
       # 2. Настраиваем Upstream и синхронизируем с оригиналом
       - name: Sync with Upstream
+        id: sync_upstream
         run: |
           git remote add upstream https://github.com/cagnulein/qdomyos-zwift.git
           git fetch upstream
           if git diff --quiet HEAD upstream/master; then
-            echo "No updates. Skipping build."
-            echo "RUN_BUILD=false" >> $GITHUB_ENV
+            echo "run_build=false" >> $GITHUB_OUTPUT
           else
-            echo "RUN_BUILD=true" >> $GITHUB_ENV
+            echo "run_build=true" >> $GITHUB_OUTPUT
             git merge upstream/master --no-edit
             git push origin master
           fi
 
   build:
     runs-on: ubuntu-latest
-    if: ${{ env.RUN_BUILD == 'true' }}
     needs: sync
+    if: ${{ needs.sync.outputs.run_build == 'true' }}
 
     steps:
-      # 1. Клонируем оригинальный репозиторий
+      # 1. Клонируем оригинал
       - name: Checkout Original Repository
         uses: actions/checkout@v3
         with:
