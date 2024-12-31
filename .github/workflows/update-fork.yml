@@ -118,7 +118,7 @@ jobs:
 
   build-and-push-webgl:
     runs-on: ubuntu-latest
-    if: ${{ needs.sync.outputs.run_build == 'true' }}
+    if: ${{ needs.sync.outputs.run_build == 'false' }}
     needs: sync
 
     steps:
@@ -148,7 +148,7 @@ jobs:
 
   build-and-push-gui-vnc:
     runs-on: ubuntu-latest
-    if: ${{ needs.sync.outputs.run_build == 'true' }}
+    if: ${{ needs.sync.outputs.run_build == 'false' }}
     needs: sync
 
     steps:
