@@ -18,28 +18,31 @@ jobs:
           token: ${{ secrets.PAT_TOKEN }}
           fetch-depth: 0
 
-      # 2. Настраиваем Upstream и синхронизируем с оригиналом
+      # 2. Пуллим изменения из форка
+      - name: Pull Fork Changes
+        run: |
+          git pull origin master
+
+      # 3. Настраиваем Upstream и синхронизируем с оригиналом
       - name: Sync with Upstream
         run: |
           git remote add upstream https://github.com/cagnulein/qdomyos-zwift.git
           git fetch upstream
           if git diff --quiet HEAD upstream/master; then
             echo "No updates. Skipping build."
-            # exit 0
+            exit 0
           fi
           git merge upstream/master --no-edit
           git push origin master
 
-
-      # 0. Тест
+      # 4. Тест
       - name: Test
         run: |
           pwd
           ls -lah
-          exit
+          exit 0
 
-
-      # 3. Устанавливаем зависимости
+      # 5. Устанавливаем зависимости
       - name: Install Dependencies
         run: |
           sudo apt update -y
@@ -62,7 +65,7 @@ jobs:
             wget \
             unzip
 
-      # 4. Обновляем подмодули и компилируем проект
+      # 6. Обновляем подмодули и компилируем проект
       - name: Build Binary
         run: |
           git submodule update --init src/smtpclient/
@@ -73,7 +76,7 @@ jobs:
           qmake qdomyos-zwift.pro
           make -j$(nproc)
 
-      # 5. Упаковываем бинарник с добавлением даты
+      # 7. Упаковываем бинарник с добавлением даты
       - name: Package Binary
         run: |
           mkdir -p dist
@@ -83,7 +86,7 @@ jobs:
           tar -czvf dist/qdomyos-zwift-${TIMESTAMP}.tar.gz src/qdomyos-zwift
           ls -lah dist/
 
-      # 6. Создаём релиз и публикуем упакованный бинарник
+      # 8. Создаём релиз и публикуем упакованный бинарник
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
