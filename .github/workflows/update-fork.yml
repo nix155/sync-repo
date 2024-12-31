@@ -31,7 +31,7 @@ jobs:
           git push origin master
 
       - name: Cancel Workflow If No Updates
-        if: env.SHOULD_CONTINUE == 'true'
+        # if: env.SHOULD_CONTINUE == 'true'
         uses: actions/github-script@v6
         with:
           script: |
