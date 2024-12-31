@@ -33,7 +33,7 @@ jobs:
       # 3. Устанавливаем зависимости
       - name: Install Dependencies
         run: |
-          sudo apt update && sudo apt upgrade -y
+          sudo apt update -y
           sudo apt install --no-install-recommends -y \
             git \
             ca-certificates \
@@ -52,7 +52,6 @@ jobs:
             make \
             wget \
             unzip
-          sudo rm -rf /var/lib/apt/lists/*
 
       # 4. Обновляем подмодули и компилируем проект
       - name: Build Binary
