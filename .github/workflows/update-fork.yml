@@ -25,13 +25,13 @@ jobs:
           git fetch upstream
           if git diff --quiet HEAD upstream/master; then
             echo "No updates. Skipping build."
-            echo "::set-output name=should_continue::false"
+            echo "SHOULD_CONTINUE=false" >> $GITHUB_ENV
           fi
           git merge upstream/master --no-edit
           git push origin master
 
       - name: Cancel Workflow If No Updates
-        if: ${{ steps.sync_upstream.outputs.should_continue == 'false' }}
+        if: env.SHOULD_CONTINUE == 'true'
         uses: actions/github-script@v6
         with:
           script: |
