@@ -116,7 +116,7 @@ jobs:
 
   build-and-push-webgl:
     runs-on: ubuntu-latest
-    if: ${{ needs.sync.outputs.run_build == 'false' }}
+    if: ${{ needs.sync.outputs.run_build == 'true' }}
     needs: sync
 
     steps:
@@ -137,13 +137,16 @@ jobs:
       # 3. Сборка и пуш WebGL-образа
       - name: Build and Push WebGL Image
         run: |
-          docker build -t ${{ secrets.DOCKER_NAMESPACE }}/qdomyos-zwift-webgl:latest -f docker/linux_webgl/Dockerfile .
-          docker push ${{ secrets.DOCKER_NAMESPACE }}/qdomyos-zwift-webgl:latest
+          TIMESTAMP=$(date +"%Y%m%d-%H%M")
+          IMAGE_NAME="${{ secrets.DOCKER_NAMESPACE }}/qdomyos-zwift-webgl"
+          docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:$TIMESTAMP -f docker/linux_webgl/Dockerfile .
+          docker push $IMAGE_NAME:latest
+          docker push $IMAGE_NAME:$TIMESTAMP
 
 
   build-and-push-gui-vnc:
     runs-on: ubuntu-latest
-    if: ${{ needs.sync.outputs.run_build == 'false' }}
+    if: ${{ needs.sync.outputs.run_build == 'true' }}
     needs: sync
 
     steps:
@@ -164,6 +167,8 @@ jobs:
       # 3. Сборка и пуш GUI VNC-образа
       - name: Build and Push GUI VNC Image
         run: |
-          docker build -t ${{ secrets.DOCKER_NAMESPACE }}/qdomyos-zwift-gui-vnc:latest -f docker/linux_gui_vnc/Dockerfile .
-          docker push ${{ secrets.DOCKER_NAMESPACE }}/qdomyos-zwift-gui-vnc:latest
-
+          TIMESTAMP=$(date +"%Y%m%d-%H%M")
+          IMAGE_NAME="${{ secrets.DOCKER_NAMESPACE }}/qdomyos-zwift-gui-vnc"
+          docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:$TIMESTAMP -f docker/linux_gui_vnc/Dockerfile .
+          docker push $IMAGE_NAME:latest
+          docker push $IMAGE_NAME:$TIMESTAMP
