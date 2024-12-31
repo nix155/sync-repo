@@ -1,0 +1,34 @@
+name: Sync Fork
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Запуск ежедневно в 00:00
+  workflow_dispatch: # Возможность ручного запуска
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Fork
+        uses: actions/checkout@v3
+        with:
+          repository: nix155/qdomyos-zwift # Ваш форк
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0 # Полная история
+
+      - name: Add Upstream and Sync
+        run: |
+          # Добавляем оригинальный репозиторий как upstream
+          git remote add upstream https://github.com/cagnulein/qdomyos-zwift.git
+          
+          # Проверяем удалённые репозитории
+          git remote -v
+          
+          # Получаем изменения из оригинального репозитория
+          git fetch upstream
+          
+          # Сливаем изменения с вашей веткой master
+          git merge upstream/master --no-edit
+          
+          # Отправляем изменения обратно в ваш форк
+          git push origin master
