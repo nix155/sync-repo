@@ -18,31 +18,19 @@ jobs:
           token: ${{ secrets.PAT_TOKEN }}
           fetch-depth: 0
 
-      # 2. Пуллим изменения из форка
-      - name: Pull Fork Changes
-        run: |
-          git pull origin master
-
-      # 3. Настраиваем Upstream и синхронизируем с оригиналом
+      # 2. Настраиваем Upstream и синхронизируем с оригиналом
       - name: Sync with Upstream
         run: |
           git remote add upstream https://github.com/cagnulein/qdomyos-zwift.git
           git fetch upstream
           if git diff --quiet HEAD upstream/master; then
             echo "No updates. Skipping build."
-            exit 0
+            # exit 0
           fi
           git merge upstream/master --no-edit
           git push origin master
 
-      # 4. Тест
-      - name: Test
-        run: |
-          pwd
-          ls -lah
-          exit 0
-
-      # 5. Устанавливаем зависимости
+      # 3. Устанавливаем зависимости
       - name: Install Dependencies
         run: |
           sudo apt update -y
@@ -65,18 +53,18 @@ jobs:
             wget \
             unzip
 
-      # 6. Обновляем подмодули и компилируем проект
+      # 4. Обновляем подмодули и компилируем проект
       - name: Build Binary
         run: |
           git submodule update --init src/smtpclient/
           git submodule update --init src/qmdnsengine/
           git submodule update --init tst/googletest/
-          mkdir -p build
-          cd src
+          pushd src
           qmake qdomyos-zwift.pro
           make -j$(nproc)
+          popd
 
-      # 7. Упаковываем бинарник с добавлением даты
+      # 5. Упаковываем бинарник с добавлением даты
       - name: Package Binary
         run: |
           mkdir -p dist
@@ -86,7 +74,7 @@ jobs:
           tar -czvf dist/qdomyos-zwift-${TIMESTAMP}.tar.gz src/qdomyos-zwift
           ls -lah dist/
 
-      # 8. Создаём релиз и публикуем упакованный бинарник
+      # 6. Создаём релиз и публикуем упакованный бинарник
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
