@@ -89,6 +89,8 @@ jobs:
           ARC_PATH="dist/qdomyos-zwift-${TIMESTAMP}.tar.gz"
           echo "FILE_PATH=$ARC_PATH" >> $GITHUB_ENV
           tar -czvf "$ARC_PATH" src/qdomyos-zwift
+          ls -lah src/
+          ls -lah dist/
 
       # 5. Создаём релиз и публикуем упакованный бинарник
       - name: Create Release
