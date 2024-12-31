@@ -30,20 +30,20 @@ jobs:
           git merge upstream/master --no-edit
           git push origin master
 
-      # - name: Cancel Workflow If No Updates
-      #   if: ${{ steps.sync_upstream.outputs.should_continue == 'false' }}
-      #   uses: actions/github-script@v6
-      #   with:
-      #     script: |
-      #       const token = process.env.GITHUB_TOKEN;
-      #       const octokit = require('@actions/github').getOctokit(token);
-      #       await octokit.actions.cancelWorkflowRun({
-      #         owner: context.repo.owner,
-      #         repo: context.repo.repo,
-      #         run_id: context.runId,
-      #       });
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Cancel Workflow If No Updates
+        if: ${{ steps.sync_upstream.outputs.should_continue == 'false' }}
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const token = process.env.GITHUB_TOKEN;
+            const octokit = require('@actions/github').getOctokit(token);
+            await octokit.actions.cancelWorkflowRun({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: context.runId,
+            });
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # 3. Устанавливаем зависимости
       - name: Install Dependencies
@@ -85,8 +85,8 @@ jobs:
           mkdir -p dist
           TIMESTAMP=$(date +"%Y%m%d-%H%M")
           ARC_PATH="dist/qdomyos-zwift-${TIMESTAMP}.tar.gz"
-          tar -czvf "$ARC_PATH" src/qdomyos-zwift
           echo "FILE_PATH=$ARC_PATH" >> $GITHUB_ENV
+          tar -czvf "$ARC_PATH" src/qdomyos-zwift
 
       # 6. Создаём релиз и публикуем упакованный бинарник
       - name: Create Release
@@ -109,3 +109,7 @@ jobs:
           asset_content_type: application/gzip
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+
+
+# бинарник лежит src/qdomyos-zwift
+# докерфайлы - сложить в docker/имя_проекта
