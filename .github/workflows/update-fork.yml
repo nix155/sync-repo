@@ -69,9 +69,11 @@ jobs:
         run: |
           mkdir -p dist
           TIMESTAMP=$(date +"%Y%m%d-%H%M")
+          ARC_PATH="dist/qdomyos-zwift-${TIMESTAMP}.tar.gz"
           ls -lah src/qdomyos-zwift
-          tar -czvf dist/qdomyos-zwift-${TIMESTAMP}.tar.gz src/qdomyos-zwift
+          tar -czvf "$ARC_PATH" src/qdomyos-zwift
           ls -lah dist/
+          echo "FILE_PATH=$ARC_PATH" >> $GITHUB_ENV
 
       # 6. Создаём релиз и публикуем упакованный бинарник
       - name: Create Release
@@ -89,6 +91,6 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/qdomyos-zwift-*.tar.gz
+          asset_path: ${{ env.FILE_PATH }}
           asset_name: qdomyos-zwift.tar.gz
           asset_content_type: application/gzip
