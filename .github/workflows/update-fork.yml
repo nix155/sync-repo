@@ -30,6 +30,15 @@ jobs:
           git merge upstream/master --no-edit
           git push origin master
 
+
+      # 0. Тест
+      - name: Test
+        run: |
+          pwd
+          ls -lah
+          exit
+
+
       # 3. Устанавливаем зависимости
       - name: Install Dependencies
         run: |
