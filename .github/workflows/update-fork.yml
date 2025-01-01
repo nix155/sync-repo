@@ -1,4 +1,3 @@
-
 name: Sync, Build, and Release
 
 on:
@@ -46,7 +45,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     needs: sync
-    if: ${{ needs.sync.outputs.run_build == 'true' }}
+    if: ${{ needs.sync.outputs.run_build == 'false' }}
 
     steps:
       # 1. Клонируем оригинал
@@ -240,4 +239,5 @@ jobs:
           docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:$TIMESTAMP -f docker/linux_gui_vnc/Dockerfile .
           docker push $IMAGE_NAME:latest
           docker push $IMAGE_NAME:$TIMESTAMP
+
 
