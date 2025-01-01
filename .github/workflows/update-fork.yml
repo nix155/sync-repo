@@ -174,3 +174,58 @@ jobs:
           docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:$TIMESTAMP -f docker/linux_gui_vnc/Dockerfile .
           docker push $IMAGE_NAME:latest
           docker push $IMAGE_NAME:$TIMESTAMP
+
+
+  build-push-gh-webgl:
+    runs-on: ubuntu-latest
+    if: ${{ needs.sync.outputs.run_build == 'false' }}
+    needs: sync
+
+    steps:
+      # 1. Клонируем оригинал
+      - name: Checkout Original Repository
+        uses: actions/checkout@v3
+        with:
+          repository: cagnulein/qdomyos-zwift
+          fetch-depth: 0
+
+      # 2. Логинимся в GHCR
+      - name: Log in to GitHub Container Registry
+        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      # 3. Сборка и пуш WebGL-образа
+      - name: Build and Push WebGL Image
+        run: |
+          TIMESTAMP=$(date +"%Y%m%d-%H%M")
+          IMAGE_NAME="ghcr.io/${{ github.repository_owner }}/qdomyos-zwift-webgl"
+          docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:$TIMESTAMP -f docker/linux_webgl/Dockerfile .
+          docker push $IMAGE_NAME:latest
+          docker push $IMAGE_NAME:$TIMESTAMP
+
+
+  build-push-gh-gui-vnc:
+    runs-on: ubuntu-latest
+    if: ${{ needs.sync.outputs.run_build == 'false' }}
+    needs: sync
+
+    steps:
+      # 1. Клонируем оригинал
+      - name: Checkout Original Repository
+        uses: actions/checkout@v3
+        with:
+          repository: cagnulein/qdomyos-zwift
+          fetch-depth: 0
+
+      # 2. Логинимся в GHCR
+      - name: Log in to GitHub Container Registry
+        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      # 3. Сборка и пуш GUI VNC-образа
+      - name: Build and Push GUI VNC Image
+        run: |
+          TIMESTAMP=$(date +"%Y%m%d-%H%M")
+          IMAGE_NAME="ghcr.io/${{ github.repository_owner }}/qdomyos-zwift-gui-vnc"
+          docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:$TIMESTAMP -f docker/linux_gui_vnc/Dockerfile .
+          docker push $IMAGE_NAME:latest
+          docker push $IMAGE_NAME:$TIMESTAMP
+
