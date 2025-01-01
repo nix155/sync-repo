@@ -118,7 +118,7 @@ jobs:
 
   build-and-push-webgl:
     runs-on: ubuntu-latest
-    if: ${{ needs.sync.outputs.run_build == 'true' }}
+    if: ${{ needs.sync.outputs.run_build == 'never' }}
     needs: sync
 
     steps:
@@ -148,7 +148,7 @@ jobs:
 
   build-and-push-gui-vnc:
     runs-on: ubuntu-latest
-    if: ${{ needs.sync.outputs.run_build == 'true' }}
+    if: ${{ needs.sync.outputs.run_build == 'never' }}
     needs: sync
 
     steps:
@@ -178,7 +178,7 @@ jobs:
 
   build-push-gh-webgl:
     runs-on: ubuntu-latest
-    if: ${{ needs.sync.outputs.run_build == 'false' }}
+    if: ${{ needs.sync.outputs.run_build == 'true' }}
     needs: sync
     permissions: write-all
 
@@ -206,7 +206,7 @@ jobs:
 
   build-push-gh-gui-vnc:
     runs-on: ubuntu-latest
-    if: ${{ needs.sync.outputs.run_build == 'false' }}
+    if: ${{ needs.sync.outputs.run_build == 'true' }}
     needs: sync
     permissions: write-all
 
