@@ -180,8 +180,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ needs.sync.outputs.run_build == 'false' }}
     needs: sync
-    permissions:
-      permissions: write-all
+    permissions: write-all
 
     steps:
       # 1. Клонируем оригинал
@@ -209,8 +208,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ needs.sync.outputs.run_build == 'false' }}
     needs: sync
-    permissions:
-      permissions: write-all
+    permissions: write-all
 
     steps:
       # 1. Клонируем оригинал
