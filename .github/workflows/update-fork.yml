@@ -180,6 +180,9 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ needs.sync.outputs.run_build == 'false' }}
     needs: sync
+    permissions:
+      contents: read
+      packages: write    
 
     steps:
       # 1. Клонируем оригинал
@@ -207,6 +210,9 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ needs.sync.outputs.run_build == 'false' }}
     needs: sync
+    permissions:
+      contents: read
+      packages: write
 
     steps:
       # 1. Клонируем оригинал
