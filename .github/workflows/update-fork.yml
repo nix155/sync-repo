@@ -181,8 +181,7 @@ jobs:
     if: ${{ needs.sync.outputs.run_build == 'false' }}
     needs: sync
     permissions:
-      contents: read
-      packages: write    
+      permissions: write-all
 
     steps:
       # 1. Клонируем оригинал
@@ -211,8 +210,7 @@ jobs:
     if: ${{ needs.sync.outputs.run_build == 'false' }}
     needs: sync
     permissions:
-      contents: read
-      packages: write
+      permissions: write-all
 
     steps:
       # 1. Клонируем оригинал
