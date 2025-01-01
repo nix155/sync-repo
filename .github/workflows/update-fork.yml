@@ -97,7 +97,7 @@ jobs:
           ARC_PATH="dist/$BIN_NAME"
           echo "BIN_NAME=$BIN_NAME" >> $GITHUB_ENV
           echo "ARC_PATH=$ARC_PATH" >> $GITHUB_ENV
-          tar -czvf "$ARC_PATH" src/qdomyos-zwift
+          tar -czvf "$ARC_PATH" -C src qdomyos-zwift
           echo "ls -lah src/" && ls -lah src/
           echo "ls -lah dist/" && ls -lah dist/
 
@@ -187,7 +187,7 @@ jobs:
 
   build-push-gh-webgl:
     runs-on: ubuntu-latest
-    if: ${{ needs.sync.outputs.run_build == 'true' }}
+    if: ${{ needs.sync.outputs.run_build == 'false' }}
     needs: sync
     permissions: write-all
 
@@ -215,7 +215,7 @@ jobs:
 
   build-push-gh-gui-vnc:
     runs-on: ubuntu-latest
-    if: ${{ needs.sync.outputs.run_build == 'true' }}
+    if: ${{ needs.sync.outputs.run_build == 'false' }}
     needs: sync
     permissions: write-all
 
