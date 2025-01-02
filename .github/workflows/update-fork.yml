@@ -131,7 +131,7 @@ jobs:
     uses: ./.github/workflows/build-push-dh.yml
     with:
       dockerfile: docker/linux_webgl/Dockerfile
-      image_name: "${{ secrets.DOCKER_NAMESPACE }}/qdomyos-zwift-webgl"
+      image_name: ${{ secrets.DOCKER_NAMESPACE }}/qdomyos-zwift-webgl
       timestamp: ${{ needs.sync.outputs.timestamp }}
     secrets:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
@@ -144,7 +144,7 @@ jobs:
     uses: ./.github/workflows/build-push-dh.yml
     with:
       dockerfile: docker/linux_gui_vnc/Dockerfile
-      image_name: "${{ secrets.DOCKER_NAMESPACE }}/qdomyos-zwift-gui-vnc"
+      image_name: ${{ secrets.DOCKER_NAMESPACE }}/qdomyos-zwift-gui-vnc
       timestamp: ${{ needs.sync.outputs.timestamp }}
     secrets:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
