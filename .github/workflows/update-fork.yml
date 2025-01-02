@@ -282,7 +282,7 @@ jobs:
       image_name: qdomyos-zwift-webgl
       timestamp: ${{ needs.sync.outputs.timestamp }}
     secrets:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
 
 
   build-push-gh-gui-vnc:
@@ -296,5 +296,5 @@ jobs:
       image_name: qdomyos-zwift-gui-vnc
       timestamp: ${{ needs.sync.outputs.timestamp }}
     secrets:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
 

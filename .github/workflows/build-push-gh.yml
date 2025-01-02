@@ -19,8 +19,9 @@ on:
         required: true
         type: string
     secrets:
-      GITHUB_TOKEN:
+      PAT_TOKEN:
         description: 'GitHub Token for authentication'
+        required: true
 
 jobs:
   build-and-push:
@@ -37,7 +38,7 @@ jobs:
 
       # 2. Логинимся в GHCR
       - name: Log in to GitHub Container Registry
-        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        run: echo ${{ secrets.PAT_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       # 3. Сборка и пуш Docker-образа
       - name: Build and Push Docker Image
@@ -47,3 +48,4 @@ jobs:
           docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:$TIMESTAMP -f ${{ inputs.dockerfile }} .
           docker push $IMAGE_NAME:latest
           docker push $IMAGE_NAME:$TIMESTAMP
+
