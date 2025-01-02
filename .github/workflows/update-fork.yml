@@ -131,8 +131,10 @@ jobs:
     uses: ./.github/workflows/build-push-dh.yml
     with:
       dockerfile: docker/linux_webgl/Dockerfile
-      image_name: "${{ secrets.DOCKER_NAMESPACE }}/qdomyos-zwift-webgl"
+      image_name: ${{ env.DOCKER_NAMESPACE }}/qdomyos-zwift-webgl
       timestamp: ${{ needs.sync.outputs.timestamp }}
+    env:
+      DOCKER_NAMESPACE: ${{ secrets.DOCKER_NAMESPACE }}      
     secrets:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -144,8 +146,10 @@ jobs:
     uses: ./.github/workflows/build-push-dh.yml
     with:
       dockerfile: docker/linux_gui_vnc/Dockerfile
-      image_name: "${{ secrets.DOCKER_NAMESPACE }}/qdomyos-zwift-gui-vnc"
+      image_name: ${{ env.DOCKER_NAMESPACE }}/qdomyos-zwift-gui-vnc
       timestamp: ${{ needs.sync.outputs.timestamp }}
+    env:
+      DOCKER_NAMESPACE: ${{ secrets.DOCKER_NAMESPACE }}      
     secrets:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
