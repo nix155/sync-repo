@@ -273,7 +273,6 @@ jobs:
 
   build-push-gh-webgl:
     needs: sync
-    runs-on: ubuntu-latest
     if: ${{ needs.sync.outputs.run_build == 'false' }}
     uses: ./.github/workflows/build-push-gh.yml
     with:
@@ -287,7 +286,6 @@ jobs:
 
   build-push-gh-gui-vnc:
     needs: sync
-    runs-on: ubuntu-latest
     if: ${{ needs.sync.outputs.run_build == 'false' }}
     uses: ./.github/workflows/build-push-gh.yml
     with:
