@@ -127,7 +127,7 @@ jobs:
 
   build-push-dh-webgl:
     needs: sync
-    if: ${{ needs.sync.outputs.run_build == 'false' }}
+    if: ${{ needs.sync.outputs.run_build == 'never' }}
     uses: ./.github/workflows/build-push-dh.yml
     with:
       repository: cagnulein/qdomyos-zwift
@@ -142,7 +142,7 @@ jobs:
 
   build-push-dh-gui-vnc:
     needs: sync
-    if: ${{ needs.sync.outputs.run_build == 'false' }}
+    if: ${{ needs.sync.outputs.run_build == 'never' }}
     uses: ./.github/workflows/build-push-dh.yml
     with:
       repository: cagnulein/qdomyos-zwift
@@ -215,59 +215,86 @@ jobs:
   #         docker push $IMAGE_NAME:$TIMESTAMP
 
 
+  # build-push-gh-webgl:
+  #   runs-on: ubuntu-latest
+  #   if: ${{ needs.sync.outputs.run_build == 'true' }}
+  #   needs: sync
+  #   permissions: write-all
+
+  #   steps:
+  #     # 1. Клонируем оригинал
+  #     - name: Checkout Original Repository
+  #       uses: actions/checkout@v3
+  #       with:
+  #         repository: cagnulein/qdomyos-zwift
+  #         fetch-depth: 0
+
+  #     # 2. Логинимся в GHCR
+  #     - name: Log in to GitHub Container Registry
+  #       run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+  #     # 3. Сборка и пуш WebGL-образа
+  #     - name: Build and Push WebGL Image
+  #       run: |
+  #         TIMESTAMP=${{ needs.sync.outputs.timestamp }}
+  #         IMAGE_NAME="ghcr.io/${{ github.repository_owner }}/qdomyos-zwift-webgl"
+  #         docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:$TIMESTAMP -f docker/linux_webgl/Dockerfile .
+  #         docker push $IMAGE_NAME:latest
+  #         docker push $IMAGE_NAME:$TIMESTAMP
+
+
+  # build-push-gh-gui-vnc:
+  #   runs-on: ubuntu-latest
+  #   if: ${{ needs.sync.outputs.run_build == 'true' }}
+  #   needs: sync
+  #   permissions: write-all
+
+  #   steps:
+  #     # 1. Клонируем оригинал
+  #     - name: Checkout Original Repository
+  #       uses: actions/checkout@v3
+  #       with:
+  #         repository: cagnulein/qdomyos-zwift
+  #         fetch-depth: 0
+
+  #     # 2. Логинимся в GHCR
+  #     - name: Log in to GitHub Container Registry
+  #       run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+  #     # 3. Сборка и пуш GUI VNC-образа
+  #     - name: Build and Push GUI VNC Image
+  #       run: |
+  #         TIMESTAMP=${{ needs.sync.outputs.timestamp }}
+  #         IMAGE_NAME="ghcr.io/${{ github.repository_owner }}/qdomyos-zwift-gui-vnc"
+  #         docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:$TIMESTAMP -f docker/linux_gui_vnc/Dockerfile .
+  #         docker push $IMAGE_NAME:latest
+  #         docker push $IMAGE_NAME:$TIMESTAMP
+
+
   build-push-gh-webgl:
-    runs-on: ubuntu-latest
-    if: ${{ needs.sync.outputs.run_build == 'true' }}
     needs: sync
-    permissions: write-all
-
-    steps:
-      # 1. Клонируем оригинал
-      - name: Checkout Original Repository
-        uses: actions/checkout@v3
-        with:
-          repository: cagnulein/qdomyos-zwift
-          fetch-depth: 0
-
-      # 2. Логинимся в GHCR
-      - name: Log in to GitHub Container Registry
-        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
-      # 3. Сборка и пуш WebGL-образа
-      - name: Build and Push WebGL Image
-        run: |
-          TIMESTAMP=${{ needs.sync.outputs.timestamp }}
-          IMAGE_NAME="ghcr.io/${{ github.repository_owner }}/qdomyos-zwift-webgl"
-          docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:$TIMESTAMP -f docker/linux_webgl/Dockerfile .
-          docker push $IMAGE_NAME:latest
-          docker push $IMAGE_NAME:$TIMESTAMP
+    runs-on: ubuntu-latest
+    if: ${{ needs.sync.outputs.run_build == 'false' }}
+    uses: ./.github/workflows/build-push-gh.yml
+    with:
+      repository: cagnulein/qdomyos-zwift
+      dockerfile: docker/linux_webgl/Dockerfile
+      image_name: qdomyos-zwift-webgl
+      timestamp: ${{ needs.sync.outputs.timestamp }}
+    secrets:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
   build-push-gh-gui-vnc:
-    runs-on: ubuntu-latest
-    if: ${{ needs.sync.outputs.run_build == 'true' }}
     needs: sync
-    permissions: write-all
-
-    steps:
-      # 1. Клонируем оригинал
-      - name: Checkout Original Repository
-        uses: actions/checkout@v3
-        with:
-          repository: cagnulein/qdomyos-zwift
-          fetch-depth: 0
-
-      # 2. Логинимся в GHCR
-      - name: Log in to GitHub Container Registry
-        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
-      # 3. Сборка и пуш GUI VNC-образа
-      - name: Build and Push GUI VNC Image
-        run: |
-          TIMESTAMP=${{ needs.sync.outputs.timestamp }}
-          IMAGE_NAME="ghcr.io/${{ github.repository_owner }}/qdomyos-zwift-gui-vnc"
-          docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:$TIMESTAMP -f docker/linux_gui_vnc/Dockerfile .
-          docker push $IMAGE_NAME:latest
-          docker push $IMAGE_NAME:$TIMESTAMP
-
+    runs-on: ubuntu-latest
+    if: ${{ needs.sync.outputs.run_build == 'false' }}
+    uses: ./.github/workflows/build-push-gh.yml
+    with:
+      repository: cagnulein/qdomyos-zwift
+      dockerfile: docker/linux_gui_vnc/Dockerfile
+      image_name: qdomyos-zwift-gui-vnc
+      timestamp: ${{ needs.sync.outputs.timestamp }}
+    secrets:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

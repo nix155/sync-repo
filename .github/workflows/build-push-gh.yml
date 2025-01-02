@@ -1,0 +1,49 @@
+name: Build and Push to GHCR
+
+on:
+  workflow_call:
+    inputs:
+      repository:
+        required: true
+        type: string
+      dockerfile:
+        description: 'Path to the Dockerfile'
+        required: true
+        type: string
+      image_name:
+        description: 'Image name for the Docker image'
+        required: true
+        type: string
+      timestamp:
+        description: 'Timestamp for tagging the image'
+        required: true
+        type: string
+    secrets:
+      GITHUB_TOKEN:
+        description: 'GitHub Token for authentication'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions: write-all
+
+    steps:
+      # 1. Клонируем оригинал
+      - name: Checkout Original Repository
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ inputs.repository }}
+          fetch-depth: 0
+
+      # 2. Логинимся в GHCR
+      - name: Log in to GitHub Container Registry
+        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      # 3. Сборка и пуш Docker-образа
+      - name: Build and Push Docker Image
+        run: |
+          TIMESTAMP="${{ inputs.timestamp }}"
+          IMAGE_NAME="ghcr.io/${{ github.repository_owner }}/${{ inputs.image_name }}"
+          docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:$TIMESTAMP -f ${{ inputs.dockerfile }} .
+          docker push $IMAGE_NAME:latest
+          docker push $IMAGE_NAME:$TIMESTAMP
