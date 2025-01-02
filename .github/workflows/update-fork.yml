@@ -124,7 +124,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
 
-
   build-push-dh-webgl:
     needs: sync
     if: ${{ needs.sync.outputs.run_build == 'never' }}
@@ -139,7 +138,6 @@ jobs:
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       DOCKER_NAMESPACE: ${{ secrets.DOCKER_NAMESPACE }}
 
-
   build-push-dh-gui-vnc:
     needs: sync
     if: ${{ needs.sync.outputs.run_build == 'never' }}
@@ -153,6 +151,30 @@ jobs:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       DOCKER_NAMESPACE: ${{ secrets.DOCKER_NAMESPACE }}
+
+  build-push-gh-webgl:
+    needs: sync
+    if: ${{ needs.sync.outputs.run_build == 'true' }}
+    uses: ./.github/workflows/build-push-gh.yml
+    with:
+      repository: cagnulein/qdomyos-zwift
+      dockerfile: docker/linux_webgl/Dockerfile
+      image_name: qdomyos-zwift-webgl
+      timestamp: ${{ needs.sync.outputs.timestamp }}
+    secrets:
+      PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+
+  build-push-gh-gui-vnc:
+    needs: sync
+    if: ${{ needs.sync.outputs.run_build == 'true' }}
+    uses: ./.github/workflows/build-push-gh.yml
+    with:
+      repository: cagnulein/qdomyos-zwift
+      dockerfile: docker/linux_gui_vnc/Dockerfile
+      image_name: qdomyos-zwift-gui-vnc
+      timestamp: ${{ needs.sync.outputs.timestamp }}
+    secrets:
+      PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
 
 
   # build-push-dh-webgl:
@@ -184,7 +206,6 @@ jobs:
   #         docker push $IMAGE_NAME:latest
   #         docker push $IMAGE_NAME:$TIMESTAMP
 
-
   # build-push-dh-gui-vnc:
   #   runs-on: ubuntu-latest
   #   if: ${{ needs.sync.outputs.run_build == 'never' }}
@@ -214,7 +235,6 @@ jobs:
   #         docker push $IMAGE_NAME:latest
   #         docker push $IMAGE_NAME:$TIMESTAMP
 
-
   # build-push-gh-webgl:
   #   runs-on: ubuntu-latest
   #   if: ${{ needs.sync.outputs.run_build == 'true' }}
@@ -242,7 +262,6 @@ jobs:
   #         docker push $IMAGE_NAME:latest
   #         docker push $IMAGE_NAME:$TIMESTAMP
 
-
   # build-push-gh-gui-vnc:
   #   runs-on: ubuntu-latest
   #   if: ${{ needs.sync.outputs.run_build == 'true' }}
@@ -269,30 +288,4 @@ jobs:
   #         docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:$TIMESTAMP -f docker/linux_gui_vnc/Dockerfile .
   #         docker push $IMAGE_NAME:latest
   #         docker push $IMAGE_NAME:$TIMESTAMP
-
-
-  build-push-gh-webgl:
-    needs: sync
-    if: ${{ needs.sync.outputs.run_build == 'false' }}
-    uses: ./.github/workflows/build-push-gh.yml
-    with:
-      repository: cagnulein/qdomyos-zwift
-      dockerfile: docker/linux_webgl/Dockerfile
-      image_name: qdomyos-zwift-webgl
-      timestamp: ${{ needs.sync.outputs.timestamp }}
-    secrets:
-      PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
-
-
-  build-push-gh-gui-vnc:
-    needs: sync
-    if: ${{ needs.sync.outputs.run_build == 'false' }}
-    uses: ./.github/workflows/build-push-gh.yml
-    with:
-      repository: cagnulein/qdomyos-zwift
-      dockerfile: docker/linux_gui_vnc/Dockerfile
-      image_name: qdomyos-zwift-gui-vnc
-      timestamp: ${{ needs.sync.outputs.timestamp }}
-    secrets:
-      PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
 
