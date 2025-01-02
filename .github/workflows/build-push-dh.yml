@@ -3,6 +3,9 @@ name: DockerHub Build and Push
 on:
   workflow_call:
     inputs:
+      repository:
+        required: true
+        type: string
       dockerfile:
         required: true
         type: string
@@ -29,6 +32,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
+          repository: ${{ inputs.repository }}
           fetch-depth: 0
 
       # 2. Логинимся в DockerHub

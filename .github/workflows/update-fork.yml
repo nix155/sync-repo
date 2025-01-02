@@ -130,6 +130,7 @@ jobs:
     if: ${{ needs.sync.outputs.run_build == 'false' }}
     uses: ./.github/workflows/build-push-dh.yml
     with:
+      repository: cagnulein/qdomyos-zwift
       dockerfile: docker/linux_webgl/Dockerfile
       image_name: qdomyos-zwift-webgl
       timestamp: ${{ needs.sync.outputs.timestamp }}
@@ -144,6 +145,7 @@ jobs:
     if: ${{ needs.sync.outputs.run_build == 'false' }}
     uses: ./.github/workflows/build-push-dh.yml
     with:
+      repository: cagnulein/qdomyos-zwift
       dockerfile: docker/linux_gui_vnc/Dockerfile
       image_name: qdomyos-zwift-gui-vnc
       timestamp: ${{ needs.sync.outputs.timestamp }}
