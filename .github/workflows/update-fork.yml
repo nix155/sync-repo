@@ -131,7 +131,7 @@ jobs:
     uses: ./.github/workflows/build-push-dh.yml
     with:
       dockerfile: docker/linux_webgl/Dockerfile
-      image_name: ${{ secrets.DOCKER_NAMESPACE }}/qdomyos-zwift-webgl
+      image_name: "${{ secrets.DOCKER_NAMESPACE }}/qdomyos-zwift-webgl"
       timestamp: ${{ needs.sync.outputs.timestamp }}
     secrets:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
@@ -144,7 +144,7 @@ jobs:
     uses: ./.github/workflows/build-push-dh.yml
     with:
       dockerfile: docker/linux_gui_vnc/Dockerfile
-      image_name: ${{ secrets.DOCKER_NAMESPACE }}/qdomyos-zwift-gui-vnc
+      image_name: "${{ secrets.DOCKER_NAMESPACE }}/qdomyos-zwift-gui-vnc"
       timestamp: ${{ needs.sync.outputs.timestamp }}
     secrets:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
@@ -201,14 +201,14 @@ jobs:
   #         username: ${{ secrets.DOCKER_USERNAME }}
   #         password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # 3. Сборка и пуш GUI VNC-образа
-      - name: Build and Push GUI VNC Image
-        run: |
-          TIMESTAMP=${{ needs.sync.outputs.timestamp }}
-          IMAGE_NAME="${{ secrets.DOCKER_NAMESPACE }}/qdomyos-zwift-gui-vnc"
-          docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:$TIMESTAMP -f docker/linux_gui_vnc/Dockerfile .
-          docker push $IMAGE_NAME:latest
-          docker push $IMAGE_NAME:$TIMESTAMP
+  #     # 3. Сборка и пуш GUI VNC-образа
+  #     - name: Build and Push GUI VNC Image
+  #       run: |
+  #         TIMESTAMP=${{ needs.sync.outputs.timestamp }}
+  #         IMAGE_NAME="${{ secrets.DOCKER_NAMESPACE }}/qdomyos-zwift-gui-vnc"
+  #         docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:$TIMESTAMP -f docker/linux_gui_vnc/Dockerfile .
+  #         docker push $IMAGE_NAME:latest
+  #         docker push $IMAGE_NAME:$TIMESTAMP
 
 
   build-push-gh-webgl:
