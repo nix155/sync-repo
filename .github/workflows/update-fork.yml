@@ -45,7 +45,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     needs: sync
-    if: ${{ needs.sync.outputs.run_build == 'false' }}
+    if: ${{ needs.sync.outputs.run_build == 'true' }}
 
     steps:
       # 1. Клонируем оригинал
@@ -154,7 +154,7 @@ jobs:
 
   build-push-gh-webgl:
     needs: sync
-    if: ${{ needs.sync.outputs.run_build == 'false' }}
+    if: ${{ needs.sync.outputs.run_build == 'true' }}
     uses: ./.github/workflows/build-push-gh.yml
     with:
       repository: cagnulein/qdomyos-zwift
@@ -166,7 +166,7 @@ jobs:
 
   build-push-gh-gui-vnc:
     needs: sync
-    if: ${{ needs.sync.outputs.run_build == 'false' }}
+    if: ${{ needs.sync.outputs.run_build == 'true' }}
     uses: ./.github/workflows/build-push-gh.yml
     with:
       repository: cagnulein/qdomyos-zwift
